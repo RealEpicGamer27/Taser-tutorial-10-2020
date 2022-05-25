@@ -1,0 +1,39 @@
+local maxAmmo = 1
+local Ammo = maxAmmo
+local reloading = false
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local textLabel = playerGui:WaitForChild("TaserAmmoDisplay"):FindFirstChild("AmmoText")
+
+script.Parent.Equipped:Connect(function(Mouse)
+	local function reload()
+		reloading = true
+		wait(4)
+		Ammo = maxAmmo
+		reloading = false
+	end
+
+	script.Parent.Activated:Connect(function()
+		if Ammo > 0 and not reloading then
+			Ammo = Ammo -1
+			script.Parent.TaserShot:Play()
+			if Mouse.Target.Parent:FindFirstChild("Humanoid") then
+				script.Parent.DealDamage:FireServer(Mouse.Target.Parent, 20)
+			end
+		elseif reloading == false then
+			reload()
+			script.Parent.GunShot:Stop()
+		end
+
+		while wait() do
+			textLabel.Text = (Ammo).."/"..maxAmmo
+		end
+	end)
+
+	local Input = game:GetService("UserInputService")
+	Input.InputBegan:Connect(function(Key)
+		if Key.KeyCode == Enum.KeyCode.R and reloading == false and Ammo ~= maxAmmo then
+			reload()
+		end
+	end)
+end)
