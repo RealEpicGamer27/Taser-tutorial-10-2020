@@ -1,0 +1,6 @@
+script.Parent.DealDamage.OnServerEvent:Connect(function(player, Target, Damage)
+	Target.Humanoid:TakeDamage(Damage)
+	Target.Humanoid.PlatformStand = true
+	wait(5)
+	Target.Humanoid.PlatformStand = false
+end)
